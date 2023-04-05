@@ -3,7 +3,26 @@ name = "toldwords"
 version = "0.1.0"
 description = "Using ChatGPT to make keywords for the papers from COSCUP."
 authors = ["Toomore Chiang <toomore0929@gmail.com>"]
+license = 'MIT'
 readme = "README.md"
+homepage = 'https://github.com/toomore/toldwords'
+repository = 'https://github.com/toomore/toldwords'
+packages = [
+    { include = "toldwords" },
+]
+keywords = ['API', 'ChatGPT', 'pretalx', 'COSCUP', 'openai']
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: Chinese (Traditional)",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python",
+  "Topic :: Communications :: Chat",
+  "Topic :: Internet :: WWW/HTTP",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
