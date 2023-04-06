@@ -1,13 +1,48 @@
 ''' OpenAI API Connect '''
+from enum import Enum
 from typing import List
 from requests import Session
 from pydantic import BaseModel
 
 
+class Role(str, Enum):
+    ''' Role '''
+    ASSISTANT = 'assistant'
+    SYSTEM = 'system'
+    USER = 'user'
+
+
 class Message(BaseModel):
     ''' Message in chat format '''
-    role: str
+    role: Role
     content: str
+
+    class Config:
+        use_enum_values = True
+
+
+class TokenUsage(BaseModel):
+    ''' Token usage '''
+    completion_tokens: int
+    prompt_tokens: int
+    total_tokens: int
+
+
+class Choice(BaseModel):
+    ''' choice '''
+    finish_reason: str
+    index: int
+    message: Message
+
+
+class RespCompletions(BaseModel):
+    ''' Response of chat.completions'''
+    id: str
+    model: str
+    object: str
+    created: int
+    usage: TokenUsage
+    choices: list[Choice]
 
 
 class OpenAIAPI(Session):
@@ -23,10 +58,10 @@ class OpenAIAPI(Session):
 
     def chat_completions(self,
                          messages: List[Message],
-                         model='gpt-3.5-turbo',
-                         temperature=1,
-                         n=1,
-                         user='api'):
+                         model: str = 'gpt-3.5-turbo',
+                         temperature: int = 1,
+                         n: int = 1,
+                         user: str = 'api') -> RespCompletions:
         ''' chat completions '''
         data = {
             'model': model,
@@ -35,4 +70,6 @@ class OpenAIAPI(Session):
             'n': n,
             'user': user,
         }
-        return self.post(self.url + '/chat/completions', json=data).json()
+        return RespCompletions.parse_obj(
+            self.post(self.url + '/chat/completions', json=data).json()
+        )
