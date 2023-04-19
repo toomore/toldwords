@@ -1,5 +1,5 @@
 ''' __init__ '''
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 from .openai import Choice
 from .openai import Message
 from .openai import OpenAIAPI
