@@ -1,12 +1,10 @@
 ''' Utils '''
 DATA2022 = {
     'domain': 'pretalx.com',
-    'project': 'coscup-2022',
-    'resource': 'talks',
+    'event': 'coscup-2022',
 }
 
 DATA2023 = {
     'domain': 'pretalx.coscup.org',
-    'project': 'coscup-2023-call-for-participation',
-    'resource': 'talks',
+    'event': 'coscup-2023',
 }
