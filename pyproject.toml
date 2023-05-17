@@ -27,7 +27,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.28.2"
-certifi = "^2022.12.7"
+certifi = "*"
 pydantic = "^1.10.6"
 
 [tool.poetry.group.dev.dependencies]
