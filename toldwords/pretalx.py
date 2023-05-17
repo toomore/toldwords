@@ -1,7 +1,7 @@
 ''' Fetch data from pretalx '''
 from typing import List, Generator, Any
 from requests import Session
-from pydantic import BaseModel, Field, parse_obj_as
+from pydantic import BaseModel, Field, parse_obj_as, validator
 
 
 class Talk(BaseModel):
@@ -31,6 +31,7 @@ class Speaker(BaseModel):
 
 class Submission(BaseModel):
     ''' Submission '''
+    # pylint: disable=no-self-argument
     code: str = Field(default_factory=str,
                       description='A unique, alphanumeric identifier, also used in URLs')
     speakers: list[Speaker] = Field(
@@ -54,6 +55,14 @@ class Submission(BaseModel):
     notes: str = Field(default_factory=str, description='note')
     internal_notes: str | None = Field(
         description='Notes the organisers left on the submission. Available if the requesting user has organiser permissions.')
+
+    @validator('track', pre=True)
+    def verify_track(cls, value: Any) -> dict[str, str]:
+        ''' verify track '''
+        if value is None:
+            return {'en': 'no track'}
+
+        return value
 
 
 class Room(BaseModel):
