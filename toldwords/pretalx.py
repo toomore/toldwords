@@ -1,21 +1,15 @@
 ''' Fetch data from pretalx '''
-from typing import List, Generator, Any
-from requests import Session
+from datetime import datetime
+from typing import Any, Generator, List
+
+import arrow
 from pydantic import BaseModel, Field, parse_obj_as, validator
+from requests import Session
 
 
-class Talk(BaseModel):
-    ''' Talk '''
-    code: str = Field(default_factory=str,
-                      description='A unique, alphanumeric identifier, also used in URLs')
-    title: str = Field(default_factory=str,
-                       description='The submission’s title')
-    track_id: int = Field(default_factory=int,
-                          description='ID of the track this talk belongs to')
-    state: str = Field(default_factory=str,
-                       description='The submission’s state, one of “submitted”, “accepted”, “rejected”, “confirmed”')
-    abstract: str = Field(default_factory=str,
-                          description='The abstract, a short note of the submission’s content')
+def convert_datetime(value: Any) -> datetime:
+    ''' convert `action_date` to date '''
+    return arrow.get(value).naive
 
 
 class Speaker(BaseModel):
@@ -27,6 +21,53 @@ class Speaker(BaseModel):
     submissions: list[str] | None = Field(default_factory=list)
     email: str | None = Field(default_factory=str)
     availabilities: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class Slot(BaseModel):
+    ''' Slot in talk '''
+    start: datetime = Field(default_factory=datetime.now,
+                            description='Start time')
+    end: datetime = Field(default_factory=datetime.now, description='End time')
+    room: dict[str, str] = Field(default_factory=dict, description='Room name')
+    room_id: int = Field(default=0, description='Room ID')
+
+    _validate_convert_datetime = validator(
+        'start', 'end',
+        pre=True, allow_reuse=True, always=True)(convert_datetime)
+
+
+class Talk(BaseModel):
+    ''' Talk '''
+    # pylint: disable=no-self-argument
+    code: str = Field(default_factory=str,
+                      description='A unique, alphanumeric identifier, also used in URLs')
+    title: str = Field(default_factory=str,
+                       description='The submission’s title')
+    track: dict[str, str] = Field(description='The track this talk belongs to')
+    track_id: int = Field(default_factory=int,
+                          description='ID of the track this talk belongs to')
+    submission_type: dict[str, str] | None = Field(
+        description='The submission type')
+    state: str = Field(default_factory=str,
+                       description='The submission’s state, one of '
+                                   '“submitted”, “accepted”, “rejected”, “confirmed”')
+    abstract: str = Field(default_factory=str,
+                          description='The abstract, a short note of the submission’s content')
+    duration: int = Field(
+        default_factory=int, description='The talk’s duration in minutes, or null')
+    content_locale: str = Field(
+        default_factory=str, description='The language the submission is in, e.g. “en” or “de”')
+    slot: Slot = Field(default=Slot, description='The datetime in talk')
+    speakers: list[Speaker] = Field(
+        default_factory=list, description='A list of speaker objects')
+
+    @validator('track', pre=True)
+    def verify_track(cls, value: Any) -> dict[str, str]:
+        ''' verify track '''
+        if value is None:
+            return {'en': 'no track'}
+
+        return value
 
 
 class Submission(BaseModel):
@@ -45,7 +86,8 @@ class Submission(BaseModel):
     submission_type: dict[str, str] | None = Field(
         description='The submission type')
     state: str = Field(
-        description='The submission’s state, one of “submitted”, “accepted”, “rejected”, “confirmed”')
+        description='The submission’s state, one of '
+                    '“submitted”, “accepted”, “rejected”, “confirmed”')
     abstract: str = Field(
         description='The abstract, a short note of the submission’s content')
     duration: int = Field(
@@ -54,7 +96,8 @@ class Submission(BaseModel):
         default_factory=str, description='The language the submission is in, e.g. “en” or “de”')
     notes: str = Field(default_factory=str, description='note')
     internal_notes: str | None = Field(
-        description='Notes the organisers left on the submission. Available if the requesting user has organiser permissions.')
+        description='Notes the organisers left on the submission.'
+                    'Available if the requesting user has organiser permissions.')
 
     @validator('track', pre=True)
     def verify_track(cls, value: Any) -> dict[str, str]:
@@ -75,7 +118,9 @@ class Room(BaseModel):
     capacity: int = Field(default_factory=int,
                           description='How many people fit in the room')
     position: int = Field(
-        default_factory=int, description='A number indicating the ordering of the room relative to other rooms, e.g. in schedule visualisations')
+        default_factory=int, description='A number indicating the ordering of '
+                                         'the room relative to other rooms, '
+                                         'e.g. in schedule visualisations')
     speaker_info: str = Field(default_factory=str)
     availabilities: list[dict[str, Any]] = Field(default_factory=list)
 
