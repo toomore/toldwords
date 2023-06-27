@@ -9,7 +9,7 @@ from requests import Session
 
 def convert_datetime(value: Any) -> datetime:
     ''' convert `action_date` to date '''
-    return arrow.get(value).naive
+    return arrow.get(value).datetime
 
 
 class Speaker(BaseModel):
