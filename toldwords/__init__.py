@@ -1,5 +1,5 @@
 ''' __init__ '''
-__version__ = '0.8.1'
+__version__ = '0.9.0'
 from .openai import (Choice, Message, OpenAIAPI, RespCompletions, Role,
                      TokenUsage)
 from .pretalx import Pretalx, PretalxResponse, Room, Speaker, Submission, Talk
