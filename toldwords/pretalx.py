@@ -57,7 +57,8 @@ class Talk(BaseModel):
         default_factory=int, description='The talk’s duration in minutes, or null')
     content_locale: str = Field(
         default_factory=str, description='The language the submission is in, e.g. “en” or “de”')
-    slot: Slot = Field(default=Slot, description='The datetime in talk')
+    slot: Slot = Field(default_factory=Slot,
+                       description='The datetime in talk')
     speakers: list[Speaker] = Field(
         default_factory=list, description='A list of speaker objects')
 
@@ -67,7 +68,7 @@ class Talk(BaseModel):
         if value is None:
             return {'en': 'no track'}
 
-        return value
+        return dict(value)
 
 
 class Submission(BaseModel):
@@ -105,7 +106,7 @@ class Submission(BaseModel):
         if value is None:
             return {'en': 'no track'}
 
-        return value
+        return dict(value)
 
 
 class Room(BaseModel):
