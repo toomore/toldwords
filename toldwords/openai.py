@@ -1,8 +1,9 @@
 ''' OpenAI API Connect '''
 from enum import Enum
 from typing import List
-from requests import Session
+
 from pydantic import BaseModel
+from requests import Session
 
 
 class Role(str, Enum):
@@ -59,7 +60,7 @@ class OpenAIAPI(Session):
 
     def chat_completions(self,  # pylint: disable=too-many-arguments
                          messages: List[Message],
-                         model: str = 'gpt-3.5-turbo',
+                         model: str = 'gpt-4o',
                          temperature: int = 1,
                          n: int = 1,  # pylint: disable=invalid-name
                          user: str = 'api') -> RespCompletions:
