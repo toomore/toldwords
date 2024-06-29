@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from requests import Session
 
 
@@ -15,12 +15,9 @@ class Role(str, Enum):
 
 class Message(BaseModel):
     ''' Message in chat format '''
+    model_config = ConfigDict(use_enum_values=True)
     role: Role
     content: str
-
-    class Config:  # pylint: disable=too-few-public-methods
-        ''' Config '''
-        use_enum_values = True
 
 
 class TokenUsage(BaseModel):
@@ -67,11 +64,11 @@ class OpenAIAPI(Session):
         ''' chat completions '''
         data = {
             'model': model,
-            'messages': [msg.dict() for msg in messages],
+            'messages': [msg.model_dump() for msg in messages],
             'temperature': temperature,
             'n': n,
             'user': user,
         }
-        return RespCompletions.parse_obj(
+        return RespCompletions.model_validate(
             self.post(self.url + '/chat/completions', json=data).json()
         )
