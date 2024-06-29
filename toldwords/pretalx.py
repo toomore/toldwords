@@ -1,5 +1,4 @@
 ''' Fetch data from pretalx '''
-import logging
 from datetime import datetime
 from typing import Any, Generator, List
 
