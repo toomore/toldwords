@@ -94,7 +94,7 @@ class Submission(BaseModel):
         default_factory=int, description='The talk’s duration in minutes, or null')
     content_locale: str = Field(
         default_factory=str, description='The language the submission is in, e.g. “en” or “de”')
-    notes: str = Field(default_factory=str, description='note')
+    notes: str | None = Field(default='', description='note')
     internal_notes: str | None = Field(
         description='Notes the organisers left on the submission.'
                     'Available if the requesting user has organiser permissions.')
