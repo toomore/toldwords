@@ -17,7 +17,8 @@ class Message(BaseModel):
     role: Role
     content: str
 
-    class Config:
+    class Config:  # pylint: disable=too-few-public-methods
+        ''' Config '''
         use_enum_values = True
 
 
@@ -56,11 +57,11 @@ class OpenAIAPI(Session):
         if organization:
             self.headers['OpenAI-Organization'] = organization
 
-    def chat_completions(self,
+    def chat_completions(self,  # pylint: disable=too-many-arguments
                          messages: List[Message],
-                         model: str = 'gpt-3.5-turbo',
+                         model: str = 'gpt-4o',
                          temperature: int = 1,
-                         n: int = 1,
+                         n: int = 1,  # pylint: disable=invalid-name
                          user: str = 'api') -> RespCompletions:
         ''' chat completions '''
         data = {
