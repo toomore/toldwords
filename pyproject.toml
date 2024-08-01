@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "toldwords"
-version = "0.8.3"
+version = "0.8.4"
 description = "Using ChatGPT to make keywords for the papers from COSCUP."
 authors = ["Toomore Chiang <toomore0929@gmail.com>"]
 license = 'MIT'
