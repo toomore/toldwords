@@ -36,6 +36,20 @@ class Slot(BaseModel):
         pre=True, allow_reuse=True, always=True)(convert_datetime)
 
 
+class AnsQuestion(BaseModel):
+    ''' Question in answers '''
+    id: int = Field(default_factory=int)
+    question: dict[str, str] = Field(default_factory=dict)
+
+
+class Answer(BaseModel):
+    ''' Answers in talk '''
+    id: int = Field(default_factory=int)
+    answer: str = Field(default_factory=str)
+    submission: str = Field(default_factory=str)
+    question: AnsQuestion = Field(default_factory=AnsQuestion)
+
+
 class Talk(BaseModel):
     ''' Talk '''
     # pylint: disable=no-self-argument
@@ -61,6 +75,7 @@ class Talk(BaseModel):
                        description='The datetime in talk')
     speakers: list[Speaker] = Field(
         default_factory=list, description='A list of speaker objects')
+    answers: list[Answer] = Field(default_factory=list)
 
     @validator('track', pre=True)
     def verify_track(cls, value: Any) -> dict[str, str]:
@@ -69,6 +84,22 @@ class Talk(BaseModel):
             return {'en': 'no track'}
 
         return dict(value)
+
+    @validator('answers')
+    def verify_answers(cls, value: Any, values: Any):
+        ''' Verify answers '''
+        for ans in value:
+            if ans.question.id != 216:
+                continue
+
+            if '中文' in ans.answer or 'Chinese' in ans.answer:
+                values['content_locale'] = '中文 Chinese'
+            elif '英文' in ans.answer or 'English' in ans.answer:
+                values['content_locale'] = '英文 English'
+            else:
+                values['content_locale'] = '其他 Others'
+
+            break
 
 
 class Submission(BaseModel):
