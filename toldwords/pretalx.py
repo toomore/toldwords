@@ -86,7 +86,7 @@ class Talk(BaseModel):
         return dict(value)
 
     @validator('answers')
-    def verify_answers(cls, value: Any, values: Any):
+    def verify_answers(cls, value: Any, values: Any) -> None:
         ''' Verify answers '''
         for ans in value:
             if ans.question.id != 216:
