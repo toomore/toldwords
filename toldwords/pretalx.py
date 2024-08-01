@@ -75,7 +75,7 @@ class Talk(BaseModel):
                        description='The datetime in talk')
     speakers: list[Speaker] = Field(
         default_factory=list, description='A list of speaker objects')
-    answers: list[Answer] = Field(default_factory=list)
+    answers: list[Answer] | None = Field()
 
     @validator('track', pre=True)
     def verify_track(cls, value: Any) -> dict[str, str]:
