@@ -104,6 +104,8 @@ class Talk(BaseModel):
 
             break
 
+        return None
+
 
 class Submission(BaseModel):
     ''' Submission '''
